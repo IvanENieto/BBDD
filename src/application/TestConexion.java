@@ -10,8 +10,10 @@ public class TestConexion {
 	private String bd;
 	private String url= "jdbc:oracle:thin:@localhost:1521:XE";
 	private String usr = "SYSTEM";
-	private String pwd = "Manzana111";
+	private String pwd = "SYSTEM";
 	private static Connection conexion;
+	
+	
 	
 
 	public TestConexion()  {
@@ -35,10 +37,12 @@ public class TestConexion {
 		
 	}
 	
+	
+	
 		
 	public ObservableList<Armario> Consulta() {
 		
-		 final ObservableList<Armario> data = FXCollections.observableArrayList();
+		final ObservableList<Armario> data = FXCollections.observableArrayList();
 		
 		
 		
@@ -62,13 +66,13 @@ public class TestConexion {
 	
 	public ObservableList<Armario> Consultaarmario(String e) {
 		
-		 final ObservableList<Armario> data = FXCollections.observableArrayList();
+		final ObservableList<Armario> data = FXCollections.observableArrayList();
 		
 		
 		
 		try {
 			Statement stmt = conexion.createStatement();
-			ResultSet rset = stmt.executeQuery("SELECT * FROM PRUEBA.ARMARIO WHERE AM " );
+			ResultSet rset = stmt.executeQuery("SELECT * FROM PRUEBA.ARMARIO WHERE ARMARIO = '"+e+"' " );
 			while(rset.next()) {
 				data.add(new Armario(rset.getString(1),rset.getString(2)));
 				
@@ -84,15 +88,15 @@ public class TestConexion {
 		
 	}
 	
-	public ObservableList<Armario> Consultatamaño() {
+	public ObservableList<Armario> Consultatamaño(String e) {
 		
-		 final ObservableList<Armario> data = FXCollections.observableArrayList();
+		final ObservableList<Armario> data = FXCollections.observableArrayList();
 		
 		
 		
 		try {
 			Statement stmt = conexion.createStatement();
-			ResultSet rset = stmt.executeQuery("SELECT * FROM PRUEBA.ARMARIO" );
+			ResultSet rset = stmt.executeQuery("SELECT * FROM PRUEBA.ARMARIO WHERE TAMAÑO = '"+e+"' " );
 			while(rset.next()) {
 				data.add(new Armario(rset.getString(1),rset.getString(2)));
 				
@@ -106,6 +110,28 @@ public class TestConexion {
 		}
 		return data;
 		
+	}
+	
+	public int InsertArmario(String numero,String letra) throws SQLException{
+		final ObservableList<Armario> data = FXCollections.observableArrayList();
+	    Statement stmt = conexion.createStatement();
+
+	    int num =  stmt.executeUpdate("INSERT INTO PRUEBA.ARMARIO (ARMARIO, TAMAÑO) VALUES ('"+numero+"','"+letra+"')");
+
+	    return num;
+
+
+	}
+	
+	public int deleteArmario(String numero) throws SQLException{
+		final ObservableList<Armario> data = FXCollections.observableArrayList();
+	    Statement stmt = conexion.createStatement();
+
+	    int num =  stmt.executeUpdate("DELETE FROM PRUEBA.ARMARIO WHERE ARMARIO='"+numero+"'");
+
+	    return num;
+
+
 	}
 	
 	

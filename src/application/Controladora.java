@@ -1,6 +1,9 @@
 package application;
 
 
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,6 +14,7 @@ import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class Controladora {
@@ -22,13 +26,13 @@ public class Controladora {
    private Button Buscar;
 
    @FXML
-   private TextArea Armario;
+   private TextField Armario;
    
    @FXML
-   private TextArea Tamaño;
+   private TextField Tamano;
    
    @FXML
-   private ChoiceBox Filtro;
+   private TextField Filtro;
    
    @FXML
 	private TableView<Armario> Tabla;
@@ -37,29 +41,57 @@ public class Controladora {
 	private TableColumn<Armario,String> Amariocol;
 
 	@FXML
-	private TableColumn<Armario,String> Tamañocol;
+	private TableColumn<Armario,String> Tamanocol;
 	
-	private final ObservableList<Armario> data = FXCollections.observableArrayList();
-	ObservableList<String> filtroarmario = FXCollections.observableArrayList("Armario", "Tamaño", "Sin filtros");
-
+	private ObservableList<Armario> data = FXCollections.observableArrayList();
+	
+	TestConexion conexionBBDD = new TestConexion();
   
-   public void filtrar(ActionEvent event) {
-	   
-   }
    
-   public void introducir(ActionEvent event) {
+   
+   public void introducir(ActionEvent event) throws SQLException {	
+	  
+	   conexionBBDD.InsertArmario(Armario.getText(),Tamano.getText());
+	   data = conexionBBDD.Consulta();
+	   Tabla.setItems(data);
+	  
+		Amariocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Numero"));
+		Tamanocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Tamaño"));
+	   
+	   
 	   
    }
    
    public void buscar(ActionEvent event) {
-	      TestConexion conexionBBDD = new TestConexion();
+	      
 	 
 		
-		if(Filtro.getValue().equals("Sin filtros")) {
-		conexionBBDD.Consulta();	
-		}else if(Filtro.getValue().equals("Amario")) {
+		if(Filtro.getText().equals("Sin filtros")) {
 			
-		}else if(Filtro.getValue().equals("Tamaño")) {
+		conexionBBDD.Consulta();
+		
+		data = conexionBBDD.Consulta();
+		 Tabla.setItems(data);
+		  
+			Amariocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Numero"));
+			Tamanocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Tamaño"));
+		
+		
+		
+		}else if(Filtro.getText().equals("Armario")) {
+			data = conexionBBDD.Consultaarmario(Armario.getText());
+			 Tabla.setItems(data);
+			  
+				Amariocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Numero"));
+				Tamanocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Tamaño"));
+			
+			
+		}else if(Filtro.getText().equals("Tamaño")) {
+			data = conexionBBDD.Consultatamaño(Tamano.getText());
+			 Tabla.setItems(data);
+			  
+				Amariocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Numero"));
+				Tamanocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Tamaño"));
 			
 		}
 			
@@ -70,12 +102,11 @@ public class Controladora {
    
    @FXML
    public void initialize() {
-	   
-	   Filtro.setValue("Sin filtros");
-	   Filtro.setItems(filtroarmario);
-		
-		Amariocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Amario"));
-		Tamañocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Tamaño"));
+	   data = conexionBBDD.Consulta();
+	   Tabla.setItems(data);
+	  
+		Amariocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Numero"));
+		Tamanocol.setCellValueFactory(new PropertyValueFactory<Armario,String>("Tamaño"));
 
    }
 
